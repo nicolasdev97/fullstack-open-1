@@ -49,6 +49,7 @@ const App = () => {
   return (
     <div>
       <h1>Web development curriculum</h1>
+      {/* The Course component and its subcomponents are already separated into another modules */}
       {courses.map((course) => (
         <Course key={course.id} course={course} />
       ))}
