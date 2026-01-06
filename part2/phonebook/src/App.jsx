@@ -4,6 +4,19 @@ function App() {
   const [persons, setPersons] = useState([{ name: "Arto Hellas" }]);
   const [newName, setNewName] = useState("");
 
+  const addPerson = (e) => {
+    e.preventDefault();
+
+    if (persons.some((person) => person.name === newName)) {
+      alert(`${newName} is already added to phonebook`);
+      setNewName("");
+      return;
+    }
+
+    setPersons([...persons, { name: newName }]);
+    setNewName("");
+  };
+
   return (
     <div>
       <h2>Phonebook</h2>
@@ -13,14 +26,7 @@ function App() {
           <input value={newName} onChange={(e) => setNewName(e.target.value)} />
         </div>
         <div>
-          <button
-            type="submit"
-            onClick={(e) => {
-              e.preventDefault();
-              setPersons([...persons, { name: newName }]);
-              setNewName("");
-            }}
-          >
+          <button type="submit" onClick={addPerson}>
             add
           </button>
         </div>
