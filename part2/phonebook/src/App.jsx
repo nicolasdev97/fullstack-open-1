@@ -9,7 +9,8 @@ import Message from "./Message";
 function App() {
   const [persons, setPersons] = useState([]);
 
-  const [message, setMessage] = useState("");
+  const [message, setMessage] = useState(null);
+  const [messageError, setMessageError] = useState(false);
 
   useEffect(() => {
     personsData.get().then((response) => {
@@ -42,14 +43,25 @@ function App() {
           .update(existingPerson.id, updatedPerson)
           .then((response) => {
             setMessage(`Updated ${personObject.name} number`);
+            setMessageError(false);
             setTimeout(() => {
-              setMessage("");
+              setMessage(null);
             }, 5000);
             setPersons(
               persons.map((person) =>
                 person.id !== existingPerson.id ? person : response.data
               )
             );
+          })
+          .catch(() => {
+            setMessage(
+              `Information of ${existingPerson.name} has already been removed from server`
+            );
+            setMessageError(true);
+            setTimeout(() => {
+              setMessage(null);
+            }, 5000);
+            setPersons(persons.filter((p) => p.id !== existingPerson.id));
           });
       }
       setNewName("");
@@ -59,8 +71,9 @@ function App() {
 
     personsData.create(personObject).then((response) => {
       setMessage(`Added ${personObject.name}`);
+      setMessageError(false);
       setTimeout(() => {
-        setMessage("");
+        setMessage(null);
       }, 5000);
       setPersons(persons.concat(response.data));
       setNewName("");
@@ -89,7 +102,7 @@ function App() {
   return (
     <div>
       <h2>Phonebook</h2>
-      <Message message={message} />
+      <Message message={message} messageError={messageError} />
       <Filter filter={filter} setFilter={setFilter} />
       <h3>Add a new</h3>
       <PersonForm
